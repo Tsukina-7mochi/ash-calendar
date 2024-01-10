@@ -1,0 +1,26 @@
+{
+  "name": "ash-calendar",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "lint": "npx @biomejs/biome lint src && npx stylelint **/*.{css,js}",
+    "format": "npx @biomejs/biome format --write src && npx stylelint --fix **/*.{css,js}"
+  },
+  "dependencies": {
+    "lit": "^3.1.0",
+    "sass": "^1.69.7"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^1.5.0",
+    "postcss-lit": "^1.1.1",
+    "stylelint": "^16.1.0",
+    "stylelint-config-recess-order": "^4.4.0",
+    "stylelint-config-standard": "^36.0.0",
+    "typescript": "^5.2.2",
+    "vite": "^5.0.8"
+  }
+}
