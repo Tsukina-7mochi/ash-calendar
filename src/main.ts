@@ -27,4 +27,8 @@ window.addEventListener('DOMContentLoaded', () => {
   elMainImage.addEventListener('touchend', clickHideUI);
   elHideUI.addEventListener('enable', hideUI);
   elHideUI.addEventListener('disable', showUI);
+
+  elFitScreen.addEventListener('click', () => {
+    elMainImage.classList.toggle('full-size');
+  });
 });
