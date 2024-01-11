@@ -1,4 +1,6 @@
-export class ElementRegister<M extends Record<string, HTMLElement> = Record<string, never>> {
+export class ElementRegister<
+  M extends Record<string, HTMLElement> = Record<string, never>,
+> {
   private readonly map: M;
 
   constructor(map: M = {} as M) {
@@ -15,7 +17,7 @@ export class ElementRegister<M extends Record<string, HTMLElement> = Record<stri
 
   setById<K extends keyof M>(key: K, id?: string) {
     const element = document.getElementById(id ?? (key as string));
-    if(element === null) {
+    if (element === null) {
       throw Error(`Element with id ${id} is not found.`);
     }
 

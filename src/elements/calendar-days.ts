@@ -24,31 +24,29 @@ export class CalendarDays extends LitElement {
     }
   `;
 
-@property({
-  converter: CalendarDate.litConverter,
-  type: CalendarDate
-})
+  @property({
+    converter: CalendarDate.litConverter,
+    type: CalendarDate,
+  })
   date = CalendarDate.today();
 
   @property({ type: Number })
   dayRange = 3;
 
   render() {
-    const days = new Array(this.dayRange * 2 + 1)
-      .fill(0)
-      .map((_, i) => {
-        const date = new CalendarDate(
-          this.date.year,
-          this.date.month,
-          this.date.date + i - this.dayRange
-        ).normalized();
+    const days = new Array(this.dayRange * 2 + 1).fill(0).map((_, i) => {
+      const date = new CalendarDate(
+        this.date.year,
+        this.date.month,
+        this.date.date + i - this.dayRange
+      ).normalized();
 
-        return html`
+      return html`
           <div class="${i === this.dayRange ? 'today day' : 'day'}">
             ${date.date}
           </div>
         `;
-      });
+    });
 
     return html`
       <div class="root">

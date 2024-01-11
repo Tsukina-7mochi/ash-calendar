@@ -72,7 +72,7 @@ export class ShareDialog extends LitElement {
   @state()
   copied = false;
 
-  private _copyURL(e: MouseEvent) {
+  private _copyURL() {
     navigator.clipboard?.writeText(this.url)?.then(() => {
       this.copied = true;
       setTimeout(() => {
@@ -105,11 +105,13 @@ export class ShareDialog extends LitElement {
             content_copy
           </span>
           <span class="copied">
-            ${this.copied ? "Copied!" : ""}
+            ${this.copied ? 'Copied!' : ''}
           </span>
         </button>
 
-        <a href="https://twitter.com/intent/tweet?text=${encodeURIComponent(this.url)}" class="share" rel="nofollow noopener" target="_blank">
+        <a href="https://twitter.com/intent/tweet?text=${encodeURIComponent(
+          this.url
+        )}" class="share" rel="nofollow noopener" target="_blank">
           Twitter (X)
         </a>
       </div>

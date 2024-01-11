@@ -39,7 +39,7 @@ export class OverlayButtonToggle extends OverlayButton {
       input[type=checkbox]:not(:checked) ~ slot[name="if-disabled"] {
         display: flex;
       }
-    `
+    `,
   ];
 
   constructor() {
@@ -55,9 +55,11 @@ export class OverlayButtonToggle extends OverlayButton {
   private _toggle() {
     this.checked = !this.checked;
 
-    this.dispatchEvent(new Event(
-      (this.checked ? 'enable' : 'disable'),
-      { bubbles: true, composed: true })
+    this.dispatchEvent(
+      new Event(this.checked ? 'enable' : 'disable', {
+        bubbles: true,
+        composed: true,
+      })
     );
   }
 

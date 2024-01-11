@@ -4,10 +4,9 @@ import { CalendarDate } from '../calendarDate';
 
 @customElement('calendar-day-of-week')
 export class CalendarDayOfWeek extends LitElement {
-
   @property({
     converter: CalendarDate.litConverter,
-    type: CalendarDate
+    type: CalendarDate,
   })
   date = CalendarDate.today();
 

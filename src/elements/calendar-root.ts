@@ -24,7 +24,7 @@ export class CalendarRoot extends LitElement {
 
   @property({
     converter: CalendarDate.litConverter,
-    type: CalendarDate
+    type: CalendarDate,
   })
   date = CalendarDate.today();
 

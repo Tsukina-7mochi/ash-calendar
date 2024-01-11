@@ -4,35 +4,35 @@ import './elements/mod.ts';
 import { CalendarRoot } from './elements/mod.ts';
 
 type DocumentElements = {
-  'main-image': HTMLImageElement,
-  'no-ash': HTMLElement,
+  'main-image': HTMLImageElement;
+  'no-ash': HTMLElement;
   // biome-ignore lint/complexity/useLiteralKeys:
-  'controls': HTMLElement,
-  'hide-ui-button': HTMLElement,
-  'rotate-button': HTMLElement,
-  'fit-screen-button': HTMLElement,
-  'share-button': HTMLElement,
-  'navigate-before-button': HTMLElement,
-  'navigate-next-button': HTMLElement,
-  'calendar-root': CalendarRoot,
-  'share-dialog': HTMLElement,
+  'controls': HTMLElement;
+  'hide-ui-button': HTMLElement;
+  'rotate-button': HTMLElement;
+  'fit-screen-button': HTMLElement;
+  'share-button': HTMLElement;
+  'navigate-before-button': HTMLElement;
+  'navigate-next-button': HTMLElement;
+  'calendar-root': CalendarRoot;
+  'share-dialog': HTMLElement;
 };
 
-const parseQueryParam = function(queryStr: string): Map<string, string> {
+const parseQueryParam = function (queryStr: string): Map<string, string> {
   const query = new Map<string, string>();
-  for(const q of queryStr.slice(1).split('&')) {
+  for (const q of queryStr.slice(1).split('&')) {
     const index = q.indexOf('=');
-    if(index === -1) {
-        query.set(q, '');
+    if (index === -1) {
+      query.set(q, '');
     } else {
-        query.set(q.slice(0, index), q.slice(index + 1));
+      query.set(q.slice(0, index), q.slice(index + 1));
     }
   }
 
   return query;
-}
+};
 
-const registerCalendar = function(
+const registerCalendar = function (
   elements: ElementRegister<DocumentElements>,
   query: Map<string, string>
 ) {
@@ -43,7 +43,7 @@ const registerCalendar = function(
   const elNavigateNext = elements.get('navigate-next-button');
 
   let date = ((date?: string) => {
-    if(typeof date !== 'string') {
+    if (typeof date !== 'string') {
       return CalendarDate.today();
     }
     return CalendarDate.parse(date) ?? CalendarDate.today();
@@ -53,34 +53,36 @@ const registerCalendar = function(
     elNoAsh.classList.remove('hidden');
   });
 
-  const updateImage = function() {
+  const updateImage = function () {
     const url = `https://raw.githubusercontent.com/ash-chan-calendar/image/master/${date.dateStringShort}.png`;
     const alt = `photo of ${date}`;
 
     elMainImage.setAttribute('src', url);
     elMainImage.setAttribute('alt', alt);
     elNoAsh.classList.add('hidden');
-  }
+  };
 
-  const changeDateByDate = function(amount: number) {
+  const changeDateByDate = function (amount: number) {
     date = new CalendarDate(
       date.year,
       date.month,
       date.date + amount
     ).normalized();
     query.set('date', date.toString());
-    const searchBody = [...query.entries()].map(([key, value]) => `${key}=${value}`).join('&');
+    const searchBody = [...query.entries()]
+      .map(([key, value]) => `${key}=${value}`)
+      .join('&');
     location.search = `?${searchBody}`;
     // elCalendarRoot.setAttribute('date', date.toString());
-  }
+  };
 
   updateImage();
   elCalendarRoot.setAttribute('date', date.toString());
   elNavigateBefore.addEventListener('click', () => changeDateByDate(-1));
   elNavigateNext.addEventListener('click', () => changeDateByDate(+1));
-}
+};
 
-const registerUIVisibility = function(
+const registerUIVisibility = function (
   elements: ElementRegister<DocumentElements>
 ) {
   const elControls = elements.get('controls');
@@ -103,9 +105,9 @@ const registerUIVisibility = function(
 
   elHideUI.addEventListener('enable', hideUI);
   elHideUI.addEventListener('disable', showUI);
-}
+};
 
-const registerFitScreen = function(
+const registerFitScreen = function (
   elements: ElementRegister<DocumentElements>
 ) {
   const elMainImage = elements.get('main-image');
@@ -114,9 +116,9 @@ const registerFitScreen = function(
   elFitScreen.addEventListener('click', () => {
     elMainImage.classList.toggle('full-size');
   });
-}
+};
 
-const registerRotate = function(
+const registerRotate = function (
   elements: ElementRegister<DocumentElements>,
   transitionDuration: number
 ) {
@@ -130,19 +132,19 @@ const registerRotate = function(
     rotateState = (rotateState + 1) % 5;
     elMainImage.classList.add(`rotate-${rotateState}`);
 
-    if(rotateState === 4) {
+    if (rotateState === 4) {
       rotateState = 0;
       setTimeout(() => {
-        if(rotateState === 0) {
+        if (rotateState === 0) {
           elMainImage.classList.remove('rotate-4');
           elMainImage.classList.add('rotate-0');
         }
       }, transitionDuration);
     }
   });
-}
+};
 
-const registerShareDialog = function(
+const registerShareDialog = function (
   elements: ElementRegister<DocumentElements>
 ) {
   const elControls = elements.get('controls');
@@ -159,7 +161,7 @@ const registerShareDialog = function(
   elShareDialog.addEventListener('close', () => {
     elShareDialog.classList.add('hidden');
   });
-}
+};
 
 window.addEventListener('DOMContentLoaded', () => {
   const query = parseQueryParam(location.search);

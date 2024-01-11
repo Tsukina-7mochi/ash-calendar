@@ -8,7 +8,7 @@
     "build": "tsc && vite build",
     "preview": "vite preview",
     "lint": "npx @biomejs/biome lint src && npx stylelint **/*.{css,js}",
-    "format": "npx @biomejs/biome format --write src && npx stylelint --fix **/*.{css,js}"
+    "format": "npx @biomejs/biome format --write src && npx stylelint --fix **/*.{scss,ts}"
   },
   "dependencies": {
     "lit": "^3.1.0",

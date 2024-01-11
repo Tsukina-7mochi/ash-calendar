@@ -1,29 +1,51 @@
-import { ComplexAttributeConverter } from "lit";
+import { ComplexAttributeConverter } from 'lit';
 
-const padWith0 = (num: number, length: number) => `${num}`.padStart(length, '0');
+const padWith0 = (num: number, length: number) =>
+  `${num}`.padStart(length, '0');
 const dateTextRegExp = /^(\d+)-(\d+)-(\d+)$/;
 
 export class CalendarDate {
-  static readonly monthNames = ['Jan.', 'Feb.', 'Mar.', 'Apr.', 'May.', 'Jun.', 'Jul.', 'Aug.', 'Sep.', 'Oct.', 'Nov.', 'Dec.'];
-  static readonly dayOfWeekNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  static readonly monthNames = [
+    'Jan.',
+    'Feb.',
+    'Mar.',
+    'Apr.',
+    'May.',
+    'Jun.',
+    'Jul.',
+    'Aug.',
+    'Sep.',
+    'Oct.',
+    'Nov.',
+    'Dec.',
+  ];
+  static readonly dayOfWeekNames = [
+    'Sun',
+    'Mon',
+    'Tue',
+    'Wed',
+    'Thu',
+    'Fri',
+    'Sat',
+  ];
   static litConverter: ComplexAttributeConverter = {
     fromAttribute(value, type) {
-      if(type !== CalendarDate || typeof value !== 'string') {
+      if (type !== CalendarDate || typeof value !== 'string') {
         return null;
       }
       return CalendarDate.parse(value);
     },
     toAttribute(value, type) {
-      if(type !== CalendarDate) {
+      if (type !== CalendarDate) {
         return null;
       }
       return (value as CalendarDate).toString();
-    }
-  }
+    },
+  };
 
   static parse(text: string): CalendarDate | null {
     const match = text.match(dateTextRegExp);
-    if(match === null) {
+    if (match === null) {
       return null;
     }
 
@@ -31,15 +53,15 @@ export class CalendarDate {
     const month = match[2];
     const date = match[3];
 
-    if(typeof year !== 'string' || typeof month !== 'string' || typeof date !== 'string') {
+    if (
+      typeof year !== 'string' ||
+      typeof month !== 'string' ||
+      typeof date !== 'string'
+    ) {
       return null;
     }
 
-    return new CalendarDate(
-      parseInt(year),
-      parseInt(month),
-      parseInt(date)
-    );
+    return new CalendarDate(parseInt(year), parseInt(month), parseInt(date));
   }
 
   static today(): CalendarDate {
@@ -63,18 +85,24 @@ export class CalendarDate {
 
   get monthName(): string {
     return CalendarDate.monthNames[this.month - 1];
-  };
+  }
 
   get dayOfWeekName(): string {
     return CalendarDate.dayOfWeekNames[this.dayOfWeek];
   }
 
   get dateString(): string {
-    return `${padWith0(this.year, 4)}-${padWith0(this.month, 2)}-${padWith0(this.date, 2)}`;
+    return `${padWith0(this.year, 4)}-${padWith0(this.month, 2)}-${padWith0(
+      this.date,
+      2
+    )}`;
   }
 
   get dateStringShort(): string {
-    return `${padWith0(this.year, 4)}${padWith0(this.month, 2)}${padWith0(this.date, 2)}`;
+    return `${padWith0(this.year, 4)}${padWith0(this.month, 2)}${padWith0(
+      this.date,
+      2
+    )}`;
   }
 
   constructor(year: number, month: number, date: number) {
@@ -101,6 +129,10 @@ export class CalendarDate {
   }
 
   equals(another: CalendarDate): boolean {
-    return this.year === another.year && this.month === another.month && this.date === another.date;
+    return (
+      this.year === another.year &&
+      this.month === another.month &&
+      this.date === another.date
+    );
   }
 }
