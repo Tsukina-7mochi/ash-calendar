@@ -1,7 +1,7 @@
 import { ComplexAttributeConverter } from "lit";
 
 const padWith0 = (num: number, length: number) => `${num}`.padStart(length, '0');
-const dateTextRegExp = /^(\d\d\d\d)-(\d\d)-(\d\d)$/;
+const dateTextRegExp = /^(\d+)-(\d+)-(\d+)$/;
 
 export class CalendarDate {
   static readonly monthNames = ['Jan.', 'Feb.', 'Mar.', 'Apr.', 'May.', 'Jun.', 'Jul.', 'Aug.', 'Sep.', 'Oct.', 'Nov.', 'Dec.'];
@@ -69,6 +69,14 @@ export class CalendarDate {
     return CalendarDate.dayOfWeekNames[this.dayOfWeek];
   }
 
+  get dateString(): string {
+    return `${padWith0(this.year, 4)}-${padWith0(this.month, 2)}-${padWith0(this.date, 2)}`;
+  }
+
+  get dateStringShort(): string {
+    return `${padWith0(this.year, 4)}${padWith0(this.month, 2)}${padWith0(this.date, 2)}`;
+  }
+
   constructor(year: number, month: number, date: number) {
     this.year = year;
     this.month = month;
@@ -89,6 +97,10 @@ export class CalendarDate {
   }
 
   toString(): string {
-    return `${padWith0(this.year, 4)}-${padWith0(this.month, 2)}-${padWith0(this.date, 2)}`;
+    return this.dateString;
+  }
+
+  equals(another: CalendarDate): boolean {
+    return this.year === another.year && this.month === another.month && this.date === another.date;
   }
 }

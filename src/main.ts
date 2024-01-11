@@ -1,6 +1,7 @@
+import { CalendarDate } from './calendarDate.ts';
 import './elements/mod.ts';
 
-const getElementByIdOrThrow = (elementId: string): HTMLElement => {
+const getElementByIdOrThrow = function(elementId: string): HTMLElement {
   const element = document.getElementById(elementId);
   if(element === null) {
     throw Error(`element of id ${elementId} is not found.`);
@@ -9,8 +10,25 @@ const getElementByIdOrThrow = (elementId: string): HTMLElement => {
   return element;
 }
 
+const parseQueryParam = function(queryStr: string): Map<string, string> {
+  const query = new Map<string, string>();
+  for(const q of location.search.slice(1).split('&')) {
+    const index = q.indexOf('=');
+    if(index === -1) {
+        query.set(q, '');
+    } else {
+        query.set(q.slice(0, index), q.slice(index + 1));
+    }
+  }
+
+  return query;
+}
+
 window.addEventListener('DOMContentLoaded', () => {
+  const query = parseQueryParam(location.search);
+
   const elMainImage = getElementByIdOrThrow('main-image');
+  const elNoAsh = getElementByIdOrThrow('no-ash');
   const elControls = getElementByIdOrThrow('controls');
   const elHideUI = getElementByIdOrThrow('hide-ui');
   const elRotate = getElementByIdOrThrow('rotate');
@@ -20,6 +38,46 @@ window.addEventListener('DOMContentLoaded', () => {
   const elNavigateNext = getElementByIdOrThrow('navigate-next');
   const elCalendarRoot = getElementByIdOrThrow('calendar-root');
   const elShareDialog = getElementByIdOrThrow('share-dialog');
+
+  let date = ((date?: string) => {
+    if(typeof date !== 'string') {
+      return CalendarDate.today();
+    }
+    return CalendarDate.parse(date) ?? CalendarDate.today();
+  })(query.get('date')).normalized();
+
+  elMainImage.addEventListener('error', () => {
+    elNoAsh.classList.remove('hidden');
+  });
+
+  const updateImage = function() {
+    const url = `https://raw.githubusercontent.com/ash-chan-calendar/image/master/${date.dateStringShort}.png`;
+    const alt = `photo of ${date}`;
+
+    elMainImage.setAttribute('src', url);
+    elMainImage.setAttribute('alt', alt);
+    elNoAsh.classList.add('hidden');
+  }
+
+  const changeDateByDate = function(amount: number) {
+    date = new CalendarDate(
+      date.year,
+      date.month,
+      date.date + amount
+    ).normalized();
+    if(!date.equals(CalendarDate.today())) {
+      query.set('date', date.toString());
+
+      const searchBody = [...query.entries()].map(([key, value]) => `${key}=${value}`).join('&');
+      location.search = `?${searchBody}`;
+    }
+    elCalendarRoot.setAttribute('date', date.toString());
+  }
+
+  updateImage();
+  elCalendarRoot.setAttribute('date', date.toString());
+  elNavigateBefore.addEventListener('click', () => changeDateByDate(-1));
+  elNavigateNext.addEventListener('click', () => changeDateByDate(+1));
 
   const hideUI = () => elControls.classList.add('hidden');
   const showUI = () => elControls.classList.remove('hidden');

@@ -17,6 +17,9 @@
         "noUnusedVariables": "warn",
         "useHookAtTopLevel": "error"
       },
+      "complexity": {
+        "useArrowFunction": "off"
+      },
       "style": {
         "noNamespace": "error"
       },
