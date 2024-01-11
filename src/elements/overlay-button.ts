@@ -31,7 +31,6 @@ export class OverlayButton extends LitElement {
       justify-content: center;
       background-color: transparent;
       border: none;
-      outline: none;
       appearance: none;
       color: unset;
     }

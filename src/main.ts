@@ -19,6 +19,7 @@ window.addEventListener('DOMContentLoaded', () => {
   const elNavigateBefore = getElementByIdOrThrow('navigate-before');
   const elNavigateNext = getElementByIdOrThrow('navigate-next');
   const elCalendarRoot = getElementByIdOrThrow('calendar-root');
+  const elShareDialog = getElementByIdOrThrow('share-dialog');
 
   const hideUI = () => elControls.classList.add('hidden');
   const showUI = () => elControls.classList.remove('hidden');
@@ -49,5 +50,16 @@ window.addEventListener('DOMContentLoaded', () => {
         }
       }, transitionDuration);
     }
+  });
+
+  elControls.addEventListener('click', () => {
+    elShareDialog.classList.add('hidden');
+  });
+  elShare.addEventListener('click', (e) => {
+    elShareDialog.classList.remove('hidden');
+    e.stopPropagation();
+  });
+  elShareDialog.addEventListener('close', () => {
+    elShareDialog.classList.add('hidden');
   });
 });
