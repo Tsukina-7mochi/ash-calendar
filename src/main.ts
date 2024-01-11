@@ -87,23 +87,21 @@ const registerUIVisibility = function (
   const elControls = elements.get('controls');
   const elHideUI = elements.get('hide-ui-button');
 
-  const clickHideUI = () => {
-    console.log('clicked');
-    elHideUI.click();
+  const showUI = () => {
+    elControls.classList.remove('hidden');
+    document.body.removeEventListener('click', showUI);
+    document.body.removeEventListener('touchend', showUI);
   };
   const hideUI = () => {
     elControls.classList.add('hidden');
-    document.body.addEventListener('click', clickHideUI);
-    document.body.addEventListener('touchend', clickHideUI);
-  };
-  const showUI = () => {
-    elControls.classList.remove('hidden');
-    document.body.removeEventListener('click', clickHideUI);
-    document.body.removeEventListener('touchend', clickHideUI);
+    document.body.addEventListener('click', showUI);
+    document.body.addEventListener('touchend', showUI);
   };
 
-  elHideUI.addEventListener('enable', hideUI);
-  elHideUI.addEventListener('disable', showUI);
+  elHideUI.addEventListener('click', (e) => {
+    hideUI();
+    e.stopPropagation();
+  });
 };
 
 const registerFitScreen = function (

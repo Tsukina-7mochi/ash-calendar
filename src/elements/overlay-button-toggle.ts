@@ -7,41 +7,6 @@ export class OverlayButtonToggle extends OverlayButton {
   @property({ type: Boolean })
   checked = false;
 
-  static styles = [
-    OverlayButton.styles,
-    css`
-      label {
-        width: 100%;
-        height: 100%;
-        cursor: pointer;
-      }
-
-      slot {
-        width: 100%;
-        height: 100%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-      }
-
-      input {
-        display: none;
-      }
-
-      slot {
-        display: none;
-      }
-
-      input[type=checkbox]:checked ~ slot[name="if-enabled"] {
-        display: flex;
-      }
-
-      input[type=checkbox]:not(:checked) ~ slot[name="if-disabled"] {
-        display: flex;
-      }
-    `,
-  ];
-
   constructor() {
     super();
 
@@ -64,14 +29,15 @@ export class OverlayButtonToggle extends OverlayButton {
   }
 
   render() {
+    const content = this.checked
+      ? html`<slot name="if-enabled"></slot>`
+      : html`<slot name="if-disabled"></slot>`;
+
     return html`
-      <div>
-        <label>
-          <input type="checkbox" ?checked=${this.checked} />
-          <slot name="if-enabled"></slot>
-          <slot name="if-disabled"></slot>
-        </label>
-      </div>
+      <label id="root">
+        <input type="checkbox" ?checked=${this.checked} hidden />
+        ${content}
+      </label>
     `;
   }
 }

@@ -1,49 +1,38 @@
 import { LitElement, css, html, CSSResultGroup } from 'lit';
 import { customElement } from 'lit/decorators.js';
+import { defaultButtonStyle } from './style';
 
 @customElement('overlay-button')
 export class OverlayButton extends LitElement {
-  static styles = css`
-    :root {
-      color: white;
-    }
+  static styles = [
+    defaultButtonStyle,
+    css`
+      #root {
+        display: flex;
+        width: 100%;
+        height: 100%;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        background-color: var(--c-overlay-bg);
+        border-radius: var(--border-radius);
+      }
 
-    div {
-      width: 100%;
-      height: 100%;
-      background-color: var(--c-overlay-bg);
-      border-radius: var(--border-radius);
-    }
+      #root:hover {
+        background-color: var(--c-overlay-bg-hover);
+      }
 
-    div:hover {
-      background-color: var(--c-overlay-bg-hover);
-    }
-
-    div:active {
-      background-color: var(--c-overlay-bg-active);
-    }
-
-    button {
-      display: flex;
-      width: 100%;
-      height: 100%;
-      align-items: center;
-      justify-content: center;
-      background-color: transparent;
-      border: none;
-      appearance: none;
-      color: unset;
-      cursor: pointer;
-    }
-  ` as CSSResultGroup;
+      #root:active {
+        background-color: var(--c-overlay-bg-active);
+      }
+    `,
+  ] as CSSResultGroup;
 
   render() {
     return html`
-      <div>
-        <button>
-          <slot></slot>
-        </button>
-      </div>
+      <button id="root">
+        <slot></slot>
+      </button>
     `;
   }
 }
