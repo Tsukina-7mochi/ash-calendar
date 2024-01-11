@@ -1,18 +1,26 @@
 import { CalendarDate } from './calendarDate.ts';
+import { ElementRegister } from './elementRegister.ts';
 import './elements/mod.ts';
+import { CalendarRoot } from './elements/mod.ts';
 
-const getElementByIdOrThrow = function(elementId: string): HTMLElement {
-  const element = document.getElementById(elementId);
-  if(element === null) {
-    throw Error(`element of id ${elementId} is not found.`);
-  }
-
-  return element;
-}
+type DocumentElements = {
+  'main-image': HTMLImageElement,
+  'no-ash': HTMLElement,
+  // biome-ignore lint/complexity/useLiteralKeys:
+  'controls': HTMLElement,
+  'hide-ui-button': HTMLElement,
+  'rotate-button': HTMLElement,
+  'fit-screen-button': HTMLElement,
+  'share-button': HTMLElement,
+  'navigate-before-button': HTMLElement,
+  'navigate-next-button': HTMLElement,
+  'calendar-root': CalendarRoot,
+  'share-dialog': HTMLElement,
+};
 
 const parseQueryParam = function(queryStr: string): Map<string, string> {
   const query = new Map<string, string>();
-  for(const q of location.search.slice(1).split('&')) {
+  for(const q of queryStr.slice(1).split('&')) {
     const index = q.indexOf('=');
     if(index === -1) {
         query.set(q, '');
@@ -24,20 +32,15 @@ const parseQueryParam = function(queryStr: string): Map<string, string> {
   return query;
 }
 
-window.addEventListener('DOMContentLoaded', () => {
-  const query = parseQueryParam(location.search);
-
-  const elMainImage = getElementByIdOrThrow('main-image');
-  const elNoAsh = getElementByIdOrThrow('no-ash');
-  const elControls = getElementByIdOrThrow('controls');
-  const elHideUI = getElementByIdOrThrow('hide-ui');
-  const elRotate = getElementByIdOrThrow('rotate');
-  const elFitScreen = getElementByIdOrThrow('fit-screen');
-  const elShare = getElementByIdOrThrow('share');
-  const elNavigateBefore = getElementByIdOrThrow('navigate-before');
-  const elNavigateNext = getElementByIdOrThrow('navigate-next');
-  const elCalendarRoot = getElementByIdOrThrow('calendar-root');
-  const elShareDialog = getElementByIdOrThrow('share-dialog');
+const registerCalendar = function(
+  elements: ElementRegister<DocumentElements>,
+  query: Map<string, string>
+) {
+  const elMainImage = elements.get('main-image');
+  const elNoAsh = elements.get('no-ash');
+  const elCalendarRoot = elements.get('calendar-root');
+  const elNavigateBefore = elements.get('navigate-before-button');
+  const elNavigateNext = elements.get('navigate-next-button');
 
   let date = ((date?: string) => {
     if(typeof date !== 'string') {
@@ -65,33 +68,61 @@ window.addEventListener('DOMContentLoaded', () => {
       date.month,
       date.date + amount
     ).normalized();
-    if(!date.equals(CalendarDate.today())) {
-      query.set('date', date.toString());
-
-      const searchBody = [...query.entries()].map(([key, value]) => `${key}=${value}`).join('&');
-      location.search = `?${searchBody}`;
-    }
-    elCalendarRoot.setAttribute('date', date.toString());
+    query.set('date', date.toString());
+    const searchBody = [...query.entries()].map(([key, value]) => `${key}=${value}`).join('&');
+    location.search = `?${searchBody}`;
+    // elCalendarRoot.setAttribute('date', date.toString());
   }
 
   updateImage();
   elCalendarRoot.setAttribute('date', date.toString());
   elNavigateBefore.addEventListener('click', () => changeDateByDate(-1));
   elNavigateNext.addEventListener('click', () => changeDateByDate(+1));
+}
 
-  const hideUI = () => elControls.classList.add('hidden');
-  const showUI = () => elControls.classList.remove('hidden');
-  const clickHideUI = () => elHideUI.click();
-  elMainImage.addEventListener('click', clickHideUI);
-  elMainImage.addEventListener('touchend', clickHideUI);
+const registerUIVisibility = function(
+  elements: ElementRegister<DocumentElements>
+) {
+  const elControls = elements.get('controls');
+  const elHideUI = elements.get('hide-ui-button');
+
+  const clickHideUI = () => {
+    console.log('clicked');
+    elHideUI.click();
+  };
+  const hideUI = () => {
+    elControls.classList.add('hidden');
+    document.body.addEventListener('click', clickHideUI);
+    document.body.addEventListener('touchend', clickHideUI);
+  };
+  const showUI = () => {
+    elControls.classList.remove('hidden');
+    document.body.removeEventListener('click', clickHideUI);
+    document.body.removeEventListener('touchend', clickHideUI);
+  };
+
   elHideUI.addEventListener('enable', hideUI);
   elHideUI.addEventListener('disable', showUI);
+}
+
+const registerFitScreen = function(
+  elements: ElementRegister<DocumentElements>
+) {
+  const elMainImage = elements.get('main-image');
+  const elFitScreen = elements.get('fit-screen-button');
 
   elFitScreen.addEventListener('click', () => {
     elMainImage.classList.toggle('full-size');
   });
+}
 
-  const transitionDuration = 400;
+const registerRotate = function(
+  elements: ElementRegister<DocumentElements>,
+  transitionDuration: number
+) {
+  const elMainImage = elements.get('main-image');
+  const elRotate = elements.get('rotate-button');
+
   let rotateState = 0;
   elMainImage.classList.add('rotate-0');
   elRotate.addEventListener('click', () => {
@@ -109,6 +140,14 @@ window.addEventListener('DOMContentLoaded', () => {
       }, transitionDuration);
     }
   });
+}
+
+const registerShareDialog = function(
+  elements: ElementRegister<DocumentElements>
+) {
+  const elControls = elements.get('controls');
+  const elShare = elements.get('share-button');
+  const elShareDialog = elements.get('share-dialog');
 
   elControls.addEventListener('click', () => {
     elShareDialog.classList.add('hidden');
@@ -120,4 +159,27 @@ window.addEventListener('DOMContentLoaded', () => {
   elShareDialog.addEventListener('close', () => {
     elShareDialog.classList.add('hidden');
   });
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+  const query = parseQueryParam(location.search);
+  const elements = new ElementRegister<DocumentElements>();
+
+  elements.setById('main-image');
+  elements.setById('no-ash');
+  elements.setById('controls');
+  elements.setById('hide-ui-button', 'hide-ui');
+  elements.setById('rotate-button', 'rotate');
+  elements.setById('fit-screen-button', 'fit-screen');
+  elements.setById('share-button', 'share');
+  elements.setById('navigate-next-button', 'navigate-next');
+  elements.setById('navigate-before-button', 'navigate-before');
+  elements.setById('calendar-root');
+  elements.setById('share-dialog');
+
+  registerCalendar(elements, query);
+  registerUIVisibility(elements);
+  registerFitScreen(elements);
+  registerRotate(elements, 400);
+  registerShareDialog(elements);
 });
