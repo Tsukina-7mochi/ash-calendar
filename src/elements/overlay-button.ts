@@ -33,6 +33,7 @@ export class OverlayButton extends LitElement {
       border: none;
       appearance: none;
       color: unset;
+      cursor: pointer;
     }
   ` as CSSResultGroup;
 

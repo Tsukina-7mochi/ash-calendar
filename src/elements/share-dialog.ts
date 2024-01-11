@@ -31,6 +31,7 @@ export class ShareDialog extends LitElement {
       font-weight: unset;
       font-size: unset;
       line-height: unset;
+      cursor: pointer;
     }
 
     button.url-field {
@@ -90,7 +91,7 @@ export class ShareDialog extends LitElement {
       <div class="root">
         <div class="title">
           <span>Share</span>
-          <button @click="${this._close}">
+          <button class="close" @click="${this._close}">
             <span class="material-symbols-outlined">
               close
             </span>
