@@ -1,5 +1,6 @@
 import { CalendarDate } from './calendarDate.ts';
 import { ElementRegister } from './elementRegister.ts';
+import { DateChangeEvent } from './elements/dateChangeEvent.ts';
 import './elements/mod.ts';
 import { CalendarRoot } from './elements/mod.ts';
 
@@ -41,7 +42,7 @@ const registerCalendar = function (
   const elNavigateBefore = elements.get('navigate-before-button');
   const elNavigateNext = elements.get('navigate-next-button');
 
-  let date = ((date?: string) => {
+  const date = ((date?: string) => {
     if (typeof date !== 'string') {
       return CalendarDate.today();
     }
@@ -51,34 +52,32 @@ const registerCalendar = function (
   elMainImage.addEventListener('error', () => {
     elNoAsh.classList.remove('hidden');
   });
+  const url = `https://raw.githubusercontent.com/ash-chan-calendar/image/master/${date.dateStringShort}.png`;
+  const alt = `photo of ${date}`;
+  elMainImage.setAttribute('src', url);
+  elMainImage.setAttribute('alt', alt);
+  elNoAsh.classList.add('hidden');
 
-  const updateImage = function () {
-    const url = `https://raw.githubusercontent.com/ash-chan-calendar/image/master/${date.dateStringShort}.png`;
-    const alt = `photo of ${date}`;
-
-    elMainImage.setAttribute('src', url);
-    elMainImage.setAttribute('alt', alt);
-    elNoAsh.classList.add('hidden');
-  };
-
-  const changeDateByDate = function (amount: number) {
-    date = new CalendarDate(
-      date.year,
-      date.month,
-      date.date + amount
-    ).normalized();
-    query.set('date', date.toString());
+  const setDate = function (newDate: CalendarDate) {
+    query.set('date', newDate.toString());
     const searchBody = [...query.entries()]
       .map(([key, value]) => `${key}=${value}`)
       .join('&');
     location.search = `?${searchBody}`;
-    // elCalendarRoot.setAttribute('date', date.toString());
   };
 
-  updateImage();
+  const changeDateByDate = function (amount: number) {
+    setDate(
+      new CalendarDate(date.year, date.month, date.date + amount).normalized()
+    );
+  };
+
   elCalendarRoot.setAttribute('date', date.toString());
   elNavigateBefore.addEventListener('click', () => changeDateByDate(-1));
   elNavigateNext.addEventListener('click', () => changeDateByDate(+1));
+  elCalendarRoot.addEventListener(DateChangeEvent.eventName, (e: Event) => {
+    setDate((e as DateChangeEvent).date);
+  });
 };
 
 const registerUIVisibility = function (

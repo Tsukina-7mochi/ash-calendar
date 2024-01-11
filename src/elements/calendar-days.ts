@@ -1,6 +1,7 @@
 import { LitElement, css, html } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { CalendarDate } from '../calendarDate';
+import { DateChangeEvent } from './dateChangeEvent';
 
 @customElement('calendar-days')
 export class CalendarDays extends LitElement {
@@ -17,6 +18,7 @@ export class CalendarDays extends LitElement {
       display: flex;
       align-items: center;
       justify-content: center;
+      cursor: pointer;
     }
 
     .today {
@@ -40,9 +42,20 @@ export class CalendarDays extends LitElement {
         this.date.month,
         this.date.date + i - this.dayRange
       ).normalized();
+      const selectDate = () => {
+        const event = new DateChangeEvent(date, {
+          bubbles: true,
+          composed: true,
+        });
+        console.log(event);
+
+        this.dispatchEvent(event);
+      };
 
       return html`
-        <div class="${i === this.dayRange ? 'today day' : 'day'}">
+        <div @click="${selectDate}" class="${
+          i === this.dayRange ? 'today day' : 'day'
+        }">
           ${date.date}
         </div>
       `;
