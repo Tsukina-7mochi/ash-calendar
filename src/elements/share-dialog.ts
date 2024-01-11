@@ -7,9 +7,9 @@ export class ShareDialog extends LitElement {
   static styles = css`
     div.root {
       font-weight: lighter;
-      background-color: var(--c-background);
+      background-color: var(--c-bg);
       padding: 1em;
-      border-radius: 4px;
+      border-radius: var(--border-radius);
     }
 
     div.title {
@@ -37,7 +37,7 @@ export class ShareDialog extends LitElement {
     button.url-field {
       padding: 0.25em 0.5em;
       border: 1px solid var(--c-text);
-      border-radius: 4px;
+      border-radius: var(--border-radius);
       margin: 0.5em 0;
     }
 
@@ -52,16 +52,16 @@ export class ShareDialog extends LitElement {
 
     span.copied {
       position: absolute;
-      background-color: var(--c-background);
+      background-color: var(--c-bg);
       padding: 0.25em;
-      border-radius: 4px;
+      border-radius: var(--border-radius);
     }
 
     a.share {
       background-color: var(--c-text);
       padding: 0.25em;
-      border-radius: 4px;
-      color: var(--c-background);
+      border-radius: var(--border-radius);
+      color: var(--c-bg);
       text-decoration: none;
     }
   `;

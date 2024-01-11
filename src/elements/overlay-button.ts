@@ -11,16 +11,16 @@ export class OverlayButton extends LitElement {
     div {
       width: 100%;
       height: 100%;
-      background-color: rgba(0, 0, 0, 0.5);
-      border-radius: 4px;
+      background-color: var(--c-overlay-bg);
+      border-radius: var(--border-radius);
     }
 
     div:hover {
-      background-color: rgba(0, 0, 0, 0.6);
+      background-color: var(--c-overlay-bg-hover);
     }
 
     div:active {
-      background-color: rgba(0, 0, 0, 0.7);
+      background-color: var(--c-overlay-bg-active);
     }
 
     button {

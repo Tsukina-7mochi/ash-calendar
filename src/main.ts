@@ -6,8 +6,7 @@ import { CalendarRoot } from './elements/mod.ts';
 type DocumentElements = {
   'main-image': HTMLImageElement;
   'no-ash': HTMLElement;
-  // biome-ignore lint/complexity/useLiteralKeys:
-  'controls': HTMLElement;
+  controls: HTMLElement;
   'hide-ui-button': HTMLElement;
   'rotate-button': HTMLElement;
   'fit-screen-button': HTMLElement;

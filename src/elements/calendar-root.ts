@@ -31,9 +31,9 @@ export class CalendarRoot extends LitElement {
   render() {
     return html`
       <div>
-        <calendar-year-month date=${this.date}></calendar-year-month>
-        <calendar-days date=${this.date}></calendar-days>
-        <calendar-day-of-week date=${this.date}></calendar-day-of-week>
+        <calendar-year-month .date=${this.date}></calendar-year-month>
+        <calendar-days .date=${this.date}></calendar-days>
+        <calendar-day-of-week .date=${this.date}></calendar-day-of-week>
       </div>
     `;
   }
