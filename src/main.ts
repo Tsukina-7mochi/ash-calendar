@@ -158,6 +158,9 @@ const registerShareDialog = function (
   elShareDialog.addEventListener('close', () => {
     elShareDialog.classList.add('hidden');
   });
+  elShareDialog.addEventListener('click', (e) => {
+    e.stopPropagation();
+  });
 };
 
 window.addEventListener('DOMContentLoaded', () => {

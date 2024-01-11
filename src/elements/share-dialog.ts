@@ -1,70 +1,74 @@
 import { LitElement, css, html } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 import useMaterialIcons from './useMaterialIcons';
+import { defaultButtonStyle } from './style';
 
 @customElement('share-dialog')
 export class ShareDialog extends LitElement {
-  static styles = css`
-    div.root {
-      font-weight: lighter;
-      background-color: var(--c-bg);
-      padding: 1em;
-      border-radius: var(--border-radius);
-    }
+  static styles = [
+    defaultButtonStyle,
+    css`
+      :host {
+        font-weight: lighter;
+        background-color: var(--c-overlay-bg);
+        padding: 1em;
+        border-radius: var(--border-radius);
+      }
 
-    div.title {
-      display: flex;
-    }
+      header {
+        display: flex;
+      }
 
-    div.title > span:first-child {
-      flex-grow: 1;
-    }
+      header h2 {
+        flex-grow: 1;
+        line-height: inherit;
+        font-weight: inherit;
+        margin: 0;
+      }
 
-    button {
-      display: block;
-      padding: unset;
-      border: unset;
-      margin: unset;
-      background-color: transparent;
-      appearance: none;
-      color: unset;
-      font-weight: unset;
-      font-size: unset;
-      line-height: unset;
-      cursor: pointer;
-    }
+      header button > * {
+        display: contents;
+      }
 
-    button.url-field {
-      padding: 0.25em 0.5em;
-      border: 1px solid var(--c-text);
-      border-radius: var(--border-radius);
-      margin: 0.5em 0;
-    }
+      .url-field {
+        display: block;
+        padding: 0.25em 0.5em;
+        border: 1px solid var(--c-text);
+        border-radius: var(--border-radius);
+        margin: 0.5em 0;
+      }
 
-    button.url-field:hover {
-      background-color: rgba(255, 255, 255, 0.1);
-    }
+      .url-field:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+      }
 
-    .material-symbols-outlined {
-      line-height: 0;
-      transform: translateY(0.25em);
-    }
+      .material-symbols-outlined {
+        line-height: 0;
+        transform: translateY(0.25em);
+      }
 
-    span.copied {
-      position: absolute;
-      background-color: var(--c-bg);
-      padding: 0.25em;
-      border-radius: var(--border-radius);
-    }
+      span.copied {
+        position: absolute;
+        background-color: var(--c-overlay-bg);
+        padding: 0.5em;
+        border-radius: var(--border-radius);
+        transform: translate(0.75em, -0.5em);
+      }
 
-    a.share {
-      background-color: var(--c-text);
-      padding: 0.25em;
-      border-radius: var(--border-radius);
-      color: var(--c-bg);
-      text-decoration: none;
-    }
-  `;
+      nav {
+        display: flex;
+      }
+
+      nav > a {
+        display: block;
+        background-color: var(--c-text);
+        padding: 0.5em;
+        border-radius: var(--border-radius);
+        color: var(--c-bg);
+        text-decoration: none;
+      }
+    `,
+  ];
 
   @property({ type: String })
   url: string = location.href;
@@ -86,35 +90,36 @@ export class ShareDialog extends LitElement {
   }
 
   render() {
+    const encodedURL = encodeURI(this.url);
+    const twitterShareURL = `https://twitter.com/intent/tweet?text=${encodedURL}`;
+
     return html`
       ${useMaterialIcons}
-      <div class="root">
-        <div class="title">
-          <span>Share</span>
-          <button class="close" @click="${this._close}">
-            <span class="material-symbols-outlined">
-              close
-            </span>
-          </button>
-        </div>
-        <button class="url-field" @click="${this._copyURL}">
-          <span>
-            ${this.url}
-          </span>
+
+      <header>
+        <h2>Share this ASH</h2>
+        <button id="close" @click="${this._close}">
           <span class="material-symbols-outlined">
-            content_copy
-          </span>
-          <span class="copied">
-            ${this.copied ? 'Copied!' : ''}
+            close
           </span>
         </button>
+      </header>
 
-        <a href="https://twitter.com/intent/tweet?text=${encodeURIComponent(
-          this.url
-        )}" class="share" rel="nofollow noopener" target="_blank">
+      <button class="url-field" @click="${this._copyURL}">
+        <span>
+          ${this.url}
+        </span>
+        <span class="material-symbols-outlined">
+          content_copy
+        </span>
+        ${this.copied ? html`<span class="copied">Copied!</span>` : ''}
+      </button>
+
+      <nav>
+        <a href="${twitterShareURL}" class="share" rel="nofollow noopener" target="_blank">
           Twitter (X)
         </a>
-      </div>
+      </nav>
     `;
   }
 }
