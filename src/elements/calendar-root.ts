@@ -5,20 +5,17 @@ import { CalendarDate } from '../calendarDate';
 @customElement('calendar-root')
 export class CalendarRoot extends LitElement {
   static styles = css`
-    div {
+    :host {
       display: flex;
       flex-direction: column;
-      padding: 0.25em;
+      align-items: center;
+      padding: 0.5em;
       height: 10em;
+      font-weight: lighter;
     }
 
     calendar-days {
       flex-grow: 1;
-    }
-
-    div > * {
-      width: 100%;
-      font-weight: lighter;
     }
   `;
 
@@ -30,11 +27,9 @@ export class CalendarRoot extends LitElement {
 
   render() {
     return html`
-      <div>
-        <calendar-year-month .date=${this.date}></calendar-year-month>
-        <calendar-days .date=${this.date}></calendar-days>
-        <calendar-day-of-week .date=${this.date}></calendar-day-of-week>
-      </div>
+      <calendar-year-month .date=${this.date}></calendar-year-month>
+      <calendar-days .date=${this.date}></calendar-days>
+      <calendar-day-of-week .date=${this.date}></calendar-day-of-week>
     `;
   }
 }

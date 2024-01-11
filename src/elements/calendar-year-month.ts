@@ -11,11 +11,7 @@ export class CalendarYearMonth extends LitElement {
   date = CalendarDate.today();
 
   render() {
-    return html`
-      <div class="root">
-        ${this.date.monthName} ${this.date.year}
-      </div>
-    `;
+    return html`${this.date.monthName} ${this.date.year}`;
   }
 }
 

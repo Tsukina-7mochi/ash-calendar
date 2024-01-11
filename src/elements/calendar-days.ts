@@ -5,7 +5,7 @@ import { CalendarDate } from '../calendarDate';
 @customElement('calendar-days')
 export class CalendarDays extends LitElement {
   static styles = css`
-    div.root {
+    :host {
       display: grid;
       grid-template-columns: repeat(7, 1fr);
       width: 100%;
@@ -13,13 +13,13 @@ export class CalendarDays extends LitElement {
       font-size: 1.5em;
     }
 
-    div.day {
+    .day {
       display: flex;
       align-items: center;
       justify-content: center;
     }
 
-    div.day.today {
+    .today {
       font-size: 2em;
     }
   `;
@@ -42,17 +42,13 @@ export class CalendarDays extends LitElement {
       ).normalized();
 
       return html`
-          <div class="${i === this.dayRange ? 'today day' : 'day'}">
-            ${date.date}
-          </div>
-        `;
+        <div class="${i === this.dayRange ? 'today day' : 'day'}">
+          ${date.date}
+        </div>
+      `;
     });
 
-    return html`
-      <div class="root">
-        ${days}
-      </div>
-    `;
+    return html`${days}`;
   }
 }
 

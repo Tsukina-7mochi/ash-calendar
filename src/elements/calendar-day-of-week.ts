@@ -11,11 +11,7 @@ export class CalendarDayOfWeek extends LitElement {
   date = CalendarDate.today();
 
   render() {
-    return html`
-      <div class="root">
-      ${this.date.dayOfWeekName}
-    </div>
-    `;
+    return html`${this.date.dayOfWeekName}`;
   }
 }
 
