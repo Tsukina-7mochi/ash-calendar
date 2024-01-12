@@ -135,4 +135,20 @@ export class CalendarDate {
       this.date === another.date
     );
   }
+
+  gt(another: CalendarDate): boolean {
+    return this.rawDate.getTime() > another.rawDate.getTime();
+  }
+
+  gte(another: CalendarDate): boolean {
+    return this.rawDate.getTime() >= another.rawDate.getTime();
+  }
+
+  lt(another: CalendarDate): boolean {
+    return this.rawDate.getTime() < another.rawDate.getTime();
+  }
+
+  lte(another: CalendarDate): boolean {
+    return this.rawDate.getTime() < another.rawDate.getTime();
+  }
 }

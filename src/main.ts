@@ -50,11 +50,19 @@ const registerCalendar = function (
   };
 
   const updateAttributes = function (date: CalendarDate) {
-    const url = `https://raw.githubusercontent.com/ash-chan-calendar/image/master/${date.dateStringShort}.png`;
-    const alt = `photo of ${date}`;
     elMainImage.setAttribute('src', '');
-    elMainImage.setAttribute('src', url);
-    elMainImage.setAttribute('alt', alt);
+    if (date.gt(CalendarDate.today())) {
+      elMainImage.setAttribute('src', 'https://ash-cale.com/404');
+      elMainImage.setAttribute('alt', '');
+    } else {
+      const rawURL = `https://raw.githubusercontent.com/ash-chan-calendar/image/master/${date.dateStringShort}.png`;
+      const url = `https://ash-cale.com/_next/image?url=${encodeURI(
+        rawURL
+      )}&w=1920&q=75`;
+      const alt = `photo of ${date}`;
+      elMainImage.setAttribute('src', url);
+      elMainImage.setAttribute('alt', alt);
+    }
     elNoAsh.classList.add('hidden');
     elCalendarRoot.setAttribute('date', date.toString());
   };
