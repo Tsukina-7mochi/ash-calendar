@@ -17,6 +17,6 @@ export class CalendarDayOfWeek extends LitElement {
 
 declare global {
   interface HTMLElementTagNameMap {
-    'calendar-year-month': CalendarDayOfWeek;
+    'calendar-day-of-week': CalendarDayOfWeek;
   }
 }
