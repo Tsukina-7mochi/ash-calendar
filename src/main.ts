@@ -33,8 +33,7 @@ const parseQueryParam = function (queryStr: string): Map<string, string> {
 };
 
 const registerCalendar = function (
-  elements: ElementRegister<DocumentElements>,
-  query: Map<string, string>
+  elements: ElementRegister<DocumentElements>
 ) {
   const elMainImage = elements.get('main-image');
   const elNoAsh = elements.get('no-ash');
@@ -42,39 +41,54 @@ const registerCalendar = function (
   const elNavigateBefore = elements.get('navigate-before-button');
   const elNavigateNext = elements.get('navigate-next-button');
 
-  const date = ((date?: string) => {
-    if (typeof date !== 'string') {
-      return CalendarDate.today();
-    }
-    return CalendarDate.parse(date) ?? CalendarDate.today();
-  })(query.get('date')).normalized();
+  const getDateFromQuery = function (queryStr: string) {
+    const query = parseQueryParam(queryStr);
+    const queryDate = query.get('date');
+    return typeof queryDate === 'string'
+      ? CalendarDate.parse(queryDate)?.normalized()
+      : null;
+  };
 
-  elMainImage.addEventListener('error', () => {
-    elNoAsh.classList.remove('hidden');
+  const updateAttributes = function (date: CalendarDate) {
+    const url = `https://raw.githubusercontent.com/ash-chan-calendar/image/master/${date.dateStringShort}.png`;
+    const alt = `photo of ${date}`;
+    elMainImage.setAttribute('src', '');
+    elMainImage.setAttribute('src', url);
+    elMainImage.setAttribute('alt', alt);
+    elNoAsh.classList.add('hidden');
+    elCalendarRoot.setAttribute('date', date.toString());
+  };
+
+  let currentDate = getDateFromQuery(location.search) ?? CalendarDate.today();
+  const setDate = function (date: CalendarDate) {
+    currentDate = date;
+    window.history.pushState({}, '', `?date=${date.toString()}`);
+    updateAttributes(date);
+  };
+  const advanceDateByDate = function (date: CalendarDate, amount: number) {
+    const newDate = new CalendarDate(
+      date.year,
+      date.month,
+      date.date + amount
+    ).normalized();
+    setDate(newDate);
+  };
+
+  updateAttributes(currentDate);
+  window.addEventListener('popstate', () => {
+    currentDate = getDateFromQuery(location.search) ?? CalendarDate.today();
+    elCalendarRoot.setAttribute('date', currentDate.toString());
+    updateAttributes(currentDate);
   });
-  const url = `https://raw.githubusercontent.com/ash-chan-calendar/image/master/${date.dateStringShort}.png`;
-  const alt = `photo of ${date}`;
-  elMainImage.setAttribute('src', url);
-  elMainImage.setAttribute('alt', alt);
-  elNoAsh.classList.add('hidden');
-
-  const setDate = function (newDate: CalendarDate) {
-    query.set('date', newDate.toString());
-    const searchBody = [...query.entries()]
-      .map(([key, value]) => `${key}=${value}`)
-      .join('&');
-    location.search = `?${searchBody}`;
-  };
-
-  const changeDateByDate = function (amount: number) {
-    setDate(
-      new CalendarDate(date.year, date.month, date.date + amount).normalized()
-    );
-  };
-
-  elCalendarRoot.setAttribute('date', date.toString());
-  elNavigateBefore.addEventListener('click', () => changeDateByDate(-1));
-  elNavigateNext.addEventListener('click', () => changeDateByDate(+1));
+  elMainImage.addEventListener('error', () =>
+    elNoAsh.classList.remove('hidden')
+  );
+  elNavigateBefore.addEventListener('click', () =>
+    advanceDateByDate(currentDate, -1)
+  );
+  elNavigateNext.addEventListener('click', () =>
+    advanceDateByDate(currentDate, +1)
+  );
   elCalendarRoot.addEventListener(DateChangeEvent.eventName, (e: Event) => {
     setDate((e as DateChangeEvent).date);
   });
@@ -163,7 +177,6 @@ const registerShareDialog = function (
 };
 
 window.addEventListener('DOMContentLoaded', () => {
-  const query = parseQueryParam(location.search);
   const elements = new ElementRegister<DocumentElements>();
 
   elements.setById('main-image');
@@ -178,7 +191,7 @@ window.addEventListener('DOMContentLoaded', () => {
   elements.setById('calendar-root');
   elements.setById('share-dialog');
 
-  registerCalendar(elements, query);
+  registerCalendar(elements);
   registerUIVisibility(elements);
   registerFitScreen(elements);
   registerRotate(elements, 400);
