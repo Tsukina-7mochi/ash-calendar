@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta property="og:title" content="ASH Calendar"/>
+    <meta property="og:url" content="https://tsukina-7mochi.github.io/ash-calendar"/>
+    <meta property="og:image" content="https://ash-cale.com/images/ACP_1_1_B_v2.png"/>
+    <meta property="og:description" content="ASH Chan Calendar (third-party)"/>
+    <meta property="og:type" content="website"/>
+    <meta property="og:site_name" content="ASH Chan Calendar"/>
+    <meta name="twitter:card" content="summary"/>
+    <meta name="twitter:title" content="ASH Calendar"/>
+    <meta name="twitter:description" content="ASH Chan Calendar (third-party)"/>
+    <title>ASH Calendar</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;400&display=swap" rel="stylesheet">
+    <script type="module" crossorigin src="/assets/index-2EX_jbqJ.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-Kj4AH6JW.css">
+  </head>
+  <body>
+    <main>
+      <img id="main-image" src="https://ash-cale.com/images/2022_ACP_logo1_v1.1_W.png" alt="loading">
+      <div id="no-ash" class="hidden">No ASH detected.</div>
+      <div id="controls">
+        <div class="upper-left">
+          <overlay-button id="hide-ui">
+            <span class="material-symbols-outlined">
+              visibility_off
+            </span>
+          </overlay-button>
+          <overlay-button id="rotate">
+            <span class="material-symbols-outlined">
+              screen_rotation
+            </span>
+          </overlay-button>
+          <overlay-button id="fit-screen">
+            <span class="material-symbols-outlined">
+              open_in_full
+            </span>
+          </overlay-button>
+        </div>
+        <div class="upper-right">
+          <overlay-button id="share">
+            <span class="material-symbols-outlined">
+              share
+            </span>
+          </overlay-button>
+        </div>
+        <div class="left">
+          <overlay-button id="navigate-before">
+            <span class="material-symbols-outlined">
+              navigate_before
+            </span>
+          </overlay-button>
+        </div>
+        <div class="right">
+          <overlay-button id="navigate-next">
+            <span class="material-symbols-outlined">
+              navigate_next
+            </span>
+          </overlay-button>
+        </div>
+        <div class="bottom">
+          <calendar-root id="calendar-root" date="2024-01-01"></calendar-root>
+        </div>
+        <div class="center">
+          <share-dialog id="share-dialog" class="hidden"></share-dialog>
+        </div>
+      </div>
+    </main>
+  </body>
+</html>
