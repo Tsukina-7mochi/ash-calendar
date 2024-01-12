@@ -117,40 +117,75 @@ const registerUIVisibility = function (
   });
 };
 
-const registerFitScreen = function (
-  elements: ElementRegister<DocumentElements>
-) {
-  const elMainImage = elements.get('main-image');
-  const elFitScreen = elements.get('fit-screen-button');
-
-  elFitScreen.addEventListener('click', () => {
-    elMainImage.classList.toggle('full-size');
-  });
-};
-
-const registerRotate = function (
+const registerRotateAndScale = function (
   elements: ElementRegister<DocumentElements>,
-  transitionDuration: number
+  windowResizeDebounce = 250
 ) {
   const elMainImage = elements.get('main-image');
   const elRotate = elements.get('rotate-button');
+  const elFitScreen = elements.get('fit-screen-button');
 
-  let rotateState = 0;
-  elMainImage.classList.add('rotate-0');
-  elRotate.addEventListener('click', () => {
-    elMainImage.classList.remove(`rotate-${rotateState}`);
-    rotateState = (rotateState + 1) % 5;
-    elMainImage.classList.add(`rotate-${rotateState}`);
+  let enlarged = false;
+  let rotationUnit = 0;
+  let scale = 1;
 
-    if (rotateState === 4) {
-      rotateState = 0;
-      setTimeout(() => {
-        if (rotateState === 0) {
-          elMainImage.classList.remove('rotate-4');
-          elMainImage.classList.add('rotate-0');
-        }
-      }, transitionDuration);
+  const calculateImageScale = function () {
+    const screenWidth = document.body.clientWidth;
+    const screenHeight = document.body.clientHeight;
+    const imageWidth = elMainImage.width;
+    const imageHeight = elMainImage.height;
+
+    if (rotationUnit % 2 === 0) {
+      // 0deg or 180deg (equivalent) rotation
+      if (enlarged) {
+        return Math.max(screenWidth / imageWidth, screenHeight / imageHeight);
+      } else {
+        return Math.min(screenWidth / imageWidth, screenHeight / imageHeight);
+      }
+    } else {
+      // 90deg or 270deg (equivalent) rotation
+      if (enlarged) {
+        return Math.max(screenHeight / imageWidth, screenWidth / imageHeight);
+      } else {
+        return Math.min(screenHeight / imageWidth, screenWidth / imageHeight);
+      }
     }
+  };
+  const setImageTransform = function () {
+    elMainImage.style.transform = `translate(-50%, -50%) rotate(${
+      rotationUnit * 90
+    }deg) scale(${scale})`;
+  };
+  const updateImageTransform = function (animate = true) {
+    if (animate) {
+      elMainImage.classList.remove('no-transition');
+    } else {
+      elMainImage.classList.add('no-transition');
+    }
+    scale = calculateImageScale();
+    setImageTransform();
+  };
+
+  elMainImage.addEventListener('load', () => {
+    updateImageTransform(false);
+  });
+
+  elFitScreen.addEventListener('click', () => {
+    enlarged = !enlarged;
+    updateImageTransform();
+  });
+
+  elRotate.addEventListener('click', () => {
+    rotationUnit += 1;
+    updateImageTransform();
+  });
+
+  let windowResizeTimeout: number | undefined = undefined;
+  window.addEventListener('resize', () => {
+    clearTimeout(windowResizeTimeout);
+    windowResizeTimeout = setTimeout(() => {
+      updateImageTransform();
+    }, windowResizeDebounce);
   });
 };
 
@@ -193,7 +228,6 @@ window.addEventListener('DOMContentLoaded', () => {
 
   registerCalendar(elements);
   registerUIVisibility(elements);
-  registerFitScreen(elements);
-  registerRotate(elements, 400);
+  registerRotateAndScale(elements);
   registerShareDialog(elements);
 });

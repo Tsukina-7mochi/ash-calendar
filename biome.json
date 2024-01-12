@@ -21,7 +21,8 @@
         "useArrowFunction": "off"
       },
       "style": {
-        "noNamespace": "error"
+        "noNamespace": "error",
+        "noUselessElse": "off"
       },
       "suspicious": {
         "noMisleadingInstantiator": "error"
